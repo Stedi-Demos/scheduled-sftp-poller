@@ -1,0 +1,31 @@
+{
+  "name": "stedi-scheduled-function",
+  "version": "1.0.0",
+  "description": "Run Stedi Functions on a schedule",
+  "type": "module",
+  "scripts": {
+    "configure-partners": "ts-node-esm ./src/setup/configureTradingPartners.ts",
+    "deploy": "ts-node-esm ./src/setup/deploy.ts",
+    "invoke-sftp-poller": "ts-node-esm ./src/scripts/invokeSftpPoller.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@stedi/sdk-client-buckets": "^0.0.19",
+    "@stedi/sdk-client-functions": "^0.0.19",
+    "@stedi/sdk-client-stash": "^0.0.28",
+    "@types/node": "^18.11.8",
+    "@types/ssh2-sftp-client": "^7.1.0",
+    "dotenv": "^16.0.3",
+    "esbuild": "^0.15.12",
+    "jszip": "^3.10.1",
+    "p-retry": "^5.1.1",
+    "serialize-error": "^11.0.0",
+    "ssh2-sftp-client": "^9.0.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "prettier": {
+    "useTabs": false
+  }
+}

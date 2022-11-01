@@ -62,16 +62,17 @@ export const handler = async (): Promise<SftpPollingResults> => {
 
       try {
         // Copy file contents via SFTP and upload to Stedi bucket for processing
+        const sourcePath = `${inboundDirectoryToScan}/${item.name}`;
         const destinationPath = `/trading_partners/${tradingPartner.value.name}/inbound/${item.name}`;
-        const fileContents = await sftpClient.get(`${inboundDirectoryToScan}/${item.name}`);
+        const fileContents = await sftpClient.get(sourcePath);
         await bucketClient().send(new PutObjectCommand({
           bucketName: destinationBucket,
           key: destinationPath,
           body: fileContents,
         }));
 
-        // TODO: delete file from SFTP server after upload
-        // await sftpDataClient.delete(path);
+        // Delete file from SFTP after processing
+        await sftpClient.delete(sourcePath);
 
         results.processedFileCount++;
         tradingPartnerPollingResults.processedFiles.push(destinationPath);

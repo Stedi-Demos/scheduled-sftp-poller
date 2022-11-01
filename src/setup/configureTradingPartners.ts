@@ -6,14 +6,16 @@ import { Convert } from "../lib/types/TradingPartnerList.js";
 import { ensureKeyspaceExists, stashClient } from "../lib/stash.js";
 import { TRADING_PARTNERS_KEYSPACE_NAME } from "../lib/constants.js";
 
+const TRADING_PARTNER_LIST_INPUT_FILE = "./src/resources/tradingPartners/tradingPartnerList.json";
+
 (async () => {
-  const configJson = fs.readFileSync("./tradingPartnerList.json", "utf8");
+  const configJson = fs.readFileSync(TRADING_PARTNER_LIST_INPUT_FILE, "utf8");
   const tradingPartnerList = Convert.toTradingPartnerList(configJson);
 
   await ensureKeyspaceExists(TRADING_PARTNERS_KEYSPACE_NAME);
 
   const promises = tradingPartnerList.items.map(async (tradingPartner) => {
-    console.log(`processing trading partner ${JSON.stringify(tradingPartner)}`);
+    console.log(`processing trading partner: ${tradingPartner.key} (${tradingPartner.value.name})`);
     const { key, value } = tradingPartner;
     await stashClient().send(new SetValueCommand({
       keyspaceName: "trading-partner-configs",

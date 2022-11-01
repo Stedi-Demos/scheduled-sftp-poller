@@ -1,4 +1,3 @@
-// https://quicktype.io/typescript generated type for trading partner configuration list
 // To parse this data:
 //
 //   import { Convert, TradingPartnerList, Item, TradingPartnerConfig, ExternalSFTPConfig, ResourceIDS } from "./file";
@@ -26,7 +25,7 @@ export interface TradingPartnerConfig {
     externalSftpConfig?: ExternalSFTPConfig;
     myPartnershipId:     string;
     name:                string;
-    resourceIds?:        ResourceIDS;
+    resourceIds?:        ResourceIDS[];
 }
 
 export interface ExternalSFTPConfig {
@@ -39,6 +38,11 @@ export interface ExternalSFTPConfig {
 }
 
 export interface ResourceIDS {
+    key:   string;
+    value: Value;
+}
+
+export interface Value {
     guideId?:   string;
     mappingId?: string;
 }
@@ -232,7 +236,7 @@ const typeMap: any = {
         { json: "externalSftpConfig", js: "externalSftpConfig", typ: u(undefined, r("ExternalSFTPConfig")) },
         { json: "myPartnershipId", js: "myPartnershipId", typ: "" },
         { json: "name", js: "name", typ: "" },
-        { json: "resourceIds", js: "resourceIds", typ: u(undefined, r("ResourceIDS")) },
+        { json: "resourceIds", js: "resourceIds", typ: u(undefined, a(r("ResourceIDS"))) },
     ], "any"),
     "ExternalSFTPConfig": o([
         { json: "hostname", js: "hostname", typ: "" },
@@ -243,6 +247,10 @@ const typeMap: any = {
         { json: "username", js: "username", typ: "" },
     ], "any"),
     "ResourceIDS": o([
+        { json: "key", js: "key", typ: "" },
+        { json: "value", js: "value", typ: r("Value") },
+    ], "any"),
+    "Value": o([
         { json: "guideId", js: "guideId", typ: u(undefined, "") },
         { json: "mappingId", js: "mappingId", typ: u(undefined, "") },
     ], "any"),

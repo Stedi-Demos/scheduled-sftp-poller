@@ -19,10 +19,15 @@
       "value": {
         "name": "Yet Another Merchant",
         "myPartnershipId": "555666777888",
-        "resourceIds": {
-          "guideId": "00001111DEADB33F",
-          "mappingId": "22223333DEADB33F"
-        },
+        "resourceIds": [
+          {
+            "key": "X12-5010-850",
+            "value": {
+              "guideId": "00001111DEADB33F",
+              "mappingId": "22223333DEADB33F"
+            }
+          }
+        ],
         "externalSftpConfig": {
           "hostname": "<REPLACE_WITH_SFTP_HOSTNAME>",
           "username": "<REPLACE_WITH_SFTP_USERNAME>",
@@ -35,9 +40,14 @@
       "value": {
         "name": "Seriously Another Merchant",
         "myPartnershipId": "AMERCHANT",
-        "resourceIds": {
-          "guideId": "01234DEADB3EF"
-        },
+        "resourceIds": [
+          {
+            "key": "X12-5010-940",
+            "value": {
+              "guideId": "01234DEADB3EF"
+            }
+          }
+        ],
         "additionalConfig": {
           "netsuiteId": "netsuite-1234"
         }

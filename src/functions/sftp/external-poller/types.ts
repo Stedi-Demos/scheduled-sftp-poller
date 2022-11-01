@@ -8,10 +8,16 @@ type ProcessingError = {
   error: Error;
 };
 
-export type SftpTradingPartnerResults = {
+export type SftpTradingPartnerPollingDetails = {
   name: string;
   filteredItems: FilteredItems[];
   processingErrors: ProcessingError[];
   processedFiles: string[];
   configurationError?: Error,
+};
+
+export type SftpPollingResults = {
+  processedFileCount: number;
+  processingErrorCount: number;
+  details: SftpTradingPartnerPollingDetails[];
 };

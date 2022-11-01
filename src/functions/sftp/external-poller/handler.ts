@@ -3,20 +3,25 @@ import { serializeError } from "serialize-error";
 
 import { PutObjectCommand } from "@stedi/sdk-client-buckets";
 
-import { SftpTradingPartnerResults } from "./types.js";
+import { SftpPollingResults, SftpTradingPartnerPollingDetails } from "./types.js";
 import { bucketClient } from "../../../lib/buckets.js";
 import { requiredEnvVar } from "../../../lib/environment.js";
 import { getTradingPartners } from "../../../lib/tradingPartners.js";
 
-export const handler = async (): Promise<SftpTradingPartnerResults[]> => {
+export const handler = async (): Promise<SftpPollingResults> => {
   const destinationBucket = requiredEnvVar("SFTP_BUCKET_NAME");
 
   const allTradingPartners = await getTradingPartners();
   const tradingPartnersToPoll = allTradingPartners.items.filter((tradingPartner) => tradingPartner.value.externalSftpConfig);
 
-  const results: SftpTradingPartnerResults[] = [];
+  const results: SftpPollingResults = {
+    processedFileCount: 0,
+    processingErrorCount: 0,
+    details: [],
+  };
+
   for await (const tradingPartner of tradingPartnersToPoll) {
-    const tradingPartnerPollingResults: SftpTradingPartnerResults = {
+    const tradingPartnerPollingResults: SftpTradingPartnerPollingDetails = {
       name: tradingPartner.value.name,
       filteredItems: [],
       processingErrors: [],
@@ -68,9 +73,12 @@ export const handler = async (): Promise<SftpTradingPartnerResults[]> => {
         // TODO: delete file from SFTP server after upload
         // await sftpDataClient.delete(path);
 
+        results.processedFileCount++;
         tradingPartnerPollingResults.processedFiles.push(destinationPath);
       } catch (e) {
         const error = e instanceof Error ? e : new Error(`unknown error: ${serializeError(e)}`);
+
+        results.processingErrorCount++;
         tradingPartnerPollingResults.processingErrors.push({
           path: `${inboundDirectoryToScan}${item.name}`,
           error,
@@ -79,7 +87,7 @@ export const handler = async (): Promise<SftpTradingPartnerResults[]> => {
     }
 
     await sftpClient.end();
-    results.push(tradingPartnerPollingResults);
+    results.details.push(tradingPartnerPollingResults);
   }
 
   return results;

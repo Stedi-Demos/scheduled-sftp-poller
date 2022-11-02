@@ -22,7 +22,7 @@ On each scheduled invocation, the `sftp-external-poller` performs several steps:
 
 ## Trading partner profiles
 
-The SFP poller relies on trading partner profile data that is stored in [Stash](https://www.stedi.com/docs/stash). The trading partner profiles are created during the demo setup process based on a JSON configuration file. An example configuration file containing basic properties for a single trading partner is shown below:
+The SFP poller relies on trading partner profile data that is stored in [Stash](https://www.stedi.com/docs/stash). The trading partner profiles are created based on a JSON configuration file (which you will need to create during setup). An example configuration file containing basic properties for a single trading partner is shown below:
 
   ```json
   {
@@ -82,9 +82,7 @@ The trading partner configuration file should conform to the TypeScript type sho
   }
   ```
 
-<!-- TODO: add detailed schema description (maybe reference to generated TS type file?) -->
-
-There is an [example configuration file](./src/resources/tradingPartners/tradingPartnerList.example.json) that can be used during setup to create a configuration file for your trading partners. 
+There is an [example configuration file](./src/resources/tradingPartners/tradingPartnerList.example.json) that includes trading partners with a variety of configurations that can be used as a starting point to create a configuration file for your trading partners. 
 
 ## Prerequisites
 
@@ -111,7 +109,7 @@ There is an [example configuration file](./src/resources/tradingPartners/trading
    STEDI_API_KEY=<REPLACE_ME>
    ```
    
-1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners resource directory](./src/resources/tradingPartners). There is an example file that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control.
+1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners resource directory](./src/resources/tradingPartners). There is an example file that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control. The trading partner profile configuration must conform to the schema described above in the [Trading partner profiles](#trading-partner-profiles-schema) overview.
 
 1. Configure your trading partners by running:
 

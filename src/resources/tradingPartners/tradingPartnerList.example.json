@@ -4,10 +4,8 @@
       "key": "ANOTHERMERCH",
       "value": {
         "name": "Another Merchant",
-        "myPartnershipId": "AMERCHANT",
         "externalSftpConfig": {
           "hostname": "<REPLACE_WITH_SFTP_HOSTNAME>",
-          "port": 22,
           "username": "<REPLACE_WITH_SFTP_USERNAME>",
           "password": "<REPLACE_WITH_SFTP_PASSWORD>",
           "inboundPath": "/inbound"
@@ -21,7 +19,7 @@
         "myPartnershipId": "555666777888",
         "resourceIds": [
           {
-            "key": "X12-5010-850",
+            "key": "X12-5010-855",
             "value": {
               "guideId": "00001111DEADB33F",
               "mappingId": "22223333DEADB33F"
@@ -39,7 +37,6 @@
       "key": "TP merchant ID",
       "value": {
         "name": "Seriously Another Merchant",
-        "myPartnershipId": "AMERCHANT",
         "resourceIds": [
           {
             "key": "X12-5010-940",

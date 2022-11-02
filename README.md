@@ -22,7 +22,7 @@ On each scheduled invocation, the `sftp-external-poller` performs several steps:
 
 ## Trading partner profiles
 
-The SFP poller relies on trading partner profile data that is stored in [Stash](https://www.stedi.com/docs/stash). The trading partner profiles are created during the demo setup process based on a JSON configuration file. An example configuration file containing properties for a single trading partner is shown below:
+The SFP poller relies on trading partner profile data that is stored in [Stash](https://www.stedi.com/docs/stash). The trading partner profiles are created during the demo setup process based on a JSON configuration file. An example configuration file containing basic properties for a single trading partner is shown below:
 
   ```json
   {
@@ -31,25 +31,10 @@ The SFP poller relies on trading partner profile data that is stored in [Stash](
         "key": "ANOTHERMERCH",
         "value": {
           "name": "Another Merchant",
-          "myPartnershipId": "AMERCHANT",
           "externalSftpConfig": {
             "hostname": "sftp.anothermerchant.com",
-            "port": 22,
             "username": "sftpuser1",
-            "password": "not-a-real-password",
-            "inboundPath": "/inbound"
-          },
-          "resourceIds": [
-            {
-              "key": "x12-850",
-              "value": {
-                "guideId": "ABC1234",
-                "mappingId": "XYZ9876"
-              }
-            }
-          ],
-          "additionalConfig": {
-            "myCustomKey": "internalMerchantId"
+            "password": "not-a-real-password"
           }
         }
       }
@@ -58,6 +43,44 @@ The SFP poller relies on trading partner profile data that is stored in [Stash](
   ```
 
 ### Trading partner profile configuration schema
+
+The trading partner configuration file should conform to the TypeScript type shown below: 
+
+  ```typescript
+  export interface TradingPartnerList {
+    items: Item[];
+  }
+  
+  export interface Item {
+    key:   string;  // key used to fetch a specific trading partner config (my trading partner's ID)
+    value: TradingPartnerConfig;
+  }
+  
+  export interface TradingPartnerConfig {
+    name:                string;
+    myPartnershipId:     string;             // the ID my trading partner uses to identify my messages
+    externalSftpConfig?: ExternalSFTPConfig; // optional SFTP connection details when using my trading partner's SFTP
+    resourceIds?:        ResourceIds[];      // optional IDs for Stedi guides and mappings specific to this trading partner
+    additionalConfig?:   any;                // optional freeform attribute to hold any additional config required
+  }
+  
+  export interface ExternalSFTPConfig {
+    hostname:      string;
+    username:      string;
+    password:      string;
+    port?:         number; // optional SFTP connection port (default is 22)
+    inboundPath?:  string; // optional path used for reading inbound documents
+    outboundPath?: string; // optional path used for writing outbound documents
+  }
+  
+  export interface ResourceIds {
+    key:          string; // key used to identify resource IDs specifc to this customer (for example, "x12-5010-855")
+    value: {
+       guideId?:   string;
+       mappingId?: string;
+    }
+  }
+  ```
 
 <!-- TODO: add detailed schema description (maybe reference to generated TS type file?) -->
 

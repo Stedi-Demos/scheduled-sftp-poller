@@ -21,9 +21,9 @@ export interface Item {
 }
 
 export interface TradingPartnerConfig {
-    additionalConfig:    any;
+    additionalConfig?:   any;
     externalSftpConfig?: ExternalSFTPConfig;
-    myPartnershipId:     string;
+    myPartnershipId?:    string;
     name:                string;
     resourceIds?:        ResourceIDS[];
 }
@@ -232,9 +232,9 @@ const typeMap: any = {
         { json: "value", js: "value", typ: r("TradingPartnerConfig") },
     ], "any"),
     "TradingPartnerConfig": o([
-        { json: "additionalConfig", js: "additionalConfig", typ: "any" },
+        { json: "additionalConfig", js: "additionalConfig", typ: u(undefined, "any") },
         { json: "externalSftpConfig", js: "externalSftpConfig", typ: u(undefined, r("ExternalSFTPConfig")) },
-        { json: "myPartnershipId", js: "myPartnershipId", typ: "" },
+        { json: "myPartnershipId", js: "myPartnershipId", typ: u(undefined, "") },
         { json: "name", js: "name", typ: "" },
         { json: "resourceIds", js: "resourceIds", typ: u(undefined, a(r("ResourceIDS"))) },
     ], "any"),

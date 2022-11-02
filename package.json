@@ -1,9 +1,10 @@
 {
-  "name": "stedi-scheduled-function",
+  "name": "stedi-sftp-poller",
   "version": "1.0.0",
-  "description": "Run Stedi Functions on a schedule",
+  "description": "Run a Stedi Function that polls external SFTP servers on a schedule",
   "type": "module",
   "scripts": {
+    "configure-buckets": "ts-node-esm ./src/setup/configureBuckets.ts",
     "configure-partners": "ts-node-esm ./src/setup/configureTradingPartners.ts",
     "deploy": "ts-node-esm ./src/setup/deploy.ts",
     "invoke-sftp-poller": "ts-node-esm ./src/scripts/invokeSftpPoller.ts"
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@stedi/sdk-client-buckets": "^0.0.19",
     "@stedi/sdk-client-functions": "^0.0.19",
+    "@stedi/sdk-client-sftp": "^0.0.28",
     "@stedi/sdk-client-stash": "^0.0.28",
     "@types/node": "^18.11.8",
     "@types/ssh2-sftp-client": "^7.1.0",

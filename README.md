@@ -58,7 +58,7 @@ The trading partner configuration file should conform to the TypeScript type sho
   
   export interface TradingPartnerConfig {
     name:                string;
-    myPartnershipId:     string;             // the ID my trading partner uses to identify my messages
+    myPartnershipId?:    string;            // optional identifier used by my trading partner to identify my messages
     externalSftpConfig?: ExternalSFTPConfig; // optional SFTP connection details when using my trading partner's SFTP
     resourceIds?:        ResourceIds[];      // optional IDs for Stedi guides and mappings specific to this trading partner
     additionalConfig?:   any;                // optional freeform attribute to hold any additional config required
@@ -109,7 +109,7 @@ There is an [example configuration file](./src/resources/tradingPartners/trading
    STEDI_API_KEY=<REPLACE_ME>
    ```
    
-1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners resource directory](./src/resources/tradingPartners). There is an example file that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control. The trading partner profile configuration must conform to the schema described above in the [Trading partner profiles](#trading-partner-profiles-schema) overview.
+1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners resource directory](./src/resources/tradingPartners). There is an example file that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control. The trading partner profile configuration must conform to the schema described above in the [Trading partner profiles](#trading-partner-profile-configuration-schema) overview.
 
 1. Configure your trading partners by running:
 

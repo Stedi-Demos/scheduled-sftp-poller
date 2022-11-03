@@ -109,7 +109,7 @@ There is an [example configuration file](./src/resources/tradingPartners/trading
    STEDI_API_KEY=<REPLACE_ME>
    ```
    
-1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners resource directory](./src/resources/tradingPartners). There is an example file that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control. The trading partner profile configuration must conform to the schema described above in the [Trading partner profiles](#trading-partner-profile-configuration-schema) overview.
+1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners resource directory](./src/resources/tradingPartners). There is an [example file](./src/resources/tradingPartners/tradingPartnerList.example.json) in that same directory that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control. The trading partner profile configuration must conform to the schema described above in the [Trading partner profiles](#trading-partner-profile-configuration-schema) overview.
 
 1. Configure your trading partners by running:
 
@@ -210,8 +210,11 @@ This will invoke the deployed `sftp-external-poller` Stedi function and poll the
 
 ### Scheduled invocation
 
-#### Configure your Stedi API Key
-The function is configured to be invoked automatically via the [scheduler GitHub action](./.github/workflows/scheduler.yaml). In order for the workflow to be able to successfully invoke the `sftp-external-poller` Stedi function, the workflow needs to provide your `STEDI_API_KEY`, as an environment variable to the script that invokes the function. Create a new [repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets?tool=webui#creating-encrypted-secrets-for-a-repository) in your forked repo named `STEDI_API_KEY` and save the value of your API key as the secret value. 
+The repo includes a [scheduler GitHub action](./.github/workflows/scheduler.yaml) which can be used to invoke the function automatically on a scheduled basis. In order to enable the scheduled function executions, you will need to complete the following steps:
+
+1. Create a new [repository secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets?tool=webui#creating-encrypted-secrets-for-a-repository) in your forked repo named `STEDI_API_KEY` and save the value of your API key as the secret value. This secret is referenced within the workflow and is passed as an environment variable to the script that invokes the `sftp-external-poller` Stedi function in your account.
+
+1. Enable the workflow to run in your forked repo. For security puposes, GitHub requires that you explicitly enable workflows that are copied over when a repo is forked. In your forked repo, click the `Actions` tab, and click the button to enable workflow runs.
 
 #### Change invocation schedule
 To change the schedule for invoking the SFTP poller, you can modify the `cron` attribute of the schedule in accordance with the [GitHub documentation for workflow schedules](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule). After making changes to the workflow definition, be sure to commit the changes and push them to your forked repo. 

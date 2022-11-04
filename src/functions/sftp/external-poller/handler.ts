@@ -5,9 +5,22 @@ import { PutObjectCommand } from "@stedi/sdk-client-buckets";
 
 import { SftpPollingResults, SftpTradingPartnerPollingDetails } from "./types.js";
 import { bucketClient } from "../../../lib/buckets.js";
+import {
+  failedExecution,
+  FailureResponse,
+  generateExecutionId,
+  markExecutionAsSuccessful,
+  recordNewExecution
+} from "../../../lib/execution.js";
 import { getTradingPartners } from "../../../lib/tradingPartners.js";
 
-export const handler = async (): Promise<SftpPollingResults> => {
+export const handler = async (): Promise<SftpPollingResults|FailureResponse> => {
+  const executionTime = new Date().toISOString();
+  const executionId = generateExecutionId({ executionTime });
+  console.log("starting", JSON.stringify({ executionTime, executionId }));
+
+  await recordNewExecution(executionId, { executionTime });
+
   const allTradingPartners = await getTradingPartners();
   const tradingPartnersToPoll = allTradingPartners.partners.filter((tradingPartner) => tradingPartner.value.externalSftpConfig);
 
@@ -103,5 +116,10 @@ export const handler = async (): Promise<SftpPollingResults> => {
     results.details.push(tradingPartnerPollingResults);
   }
 
+  if (results.details.some((tradingPartnerResults) => tradingPartnerResults.processingErrors.length > 0)) {
+    return failedExecution(executionId, new Error("encountered processing errors for some trading partners"));
+  }
+
+  await markExecutionAsSuccessful(executionId);
   return results;
 };

@@ -21,6 +21,8 @@
     "dotenv": "^16.0.3",
     "esbuild": "^0.15.12",
     "jszip": "^3.10.1",
+    "node-fetch": "^3.2.10",
+    "object-hash": "^3.0.0",
     "p-retry": "^5.1.1",
     "serialize-error": "^11.0.0",
     "ssh2-sftp-client": "^9.0.4",

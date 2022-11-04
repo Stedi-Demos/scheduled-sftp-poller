@@ -66,13 +66,13 @@ The trading partner configuration file should conform to the TypeScript type sho
   }
 
   export interface BucketConfig {
-    bucketName?: string; // optional bucket name used for reading/writing files for this trading partner
+    bucketName?: string; // optional bucket name used for reading/writing files for this trading partner (default is the bucket used to back Stedi SFTP)
     paths?: BucketPaths;
   }
 
   export interface BucketPaths {
-    inboundPath?: string;  // optional path prefix used when reading incoming files from this trading partner 
-    outboundPath?: string; // optional path prefix used when writing outgoing files for this trading partner to pick up
+    inboundPath?: string;  // optional path prefix used when reading incoming files from this trading partner (default is `trading_partners/${tradingPartnerName}/inbound`)
+    outboundPath?: string; // optional path prefix used when writing outgoing files for this trading partner to pick up (default is `trading_partners/${tradingPartnerName}/outbound`)
   }
 
   export interface ResourceIds {

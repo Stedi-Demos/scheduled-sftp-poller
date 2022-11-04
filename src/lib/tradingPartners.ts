@@ -1,6 +1,6 @@
 import { ListValuesCommand } from "@stedi/sdk-client-stash";
 
-import { Convert, TradingPartnerList } from "./types/TradingPartnerList.js";
+import { TradingPartnerList } from "./types/tradingPartnerList.js";
 import { TRADING_PARTNERS_KEYSPACE_NAME } from "./constants.js";
 import { stashClient } from "./stash.js";
 
@@ -15,11 +15,11 @@ export const getTradingPartners = async (nextPageToken?: string): Promise<Tradin
   }
 
   const tradingPartnerList: TradingPartnerList =
-    Convert.toTradingPartnerList(JSON.stringify({ items: listValuesResponse.items }));
+    TradingPartnerList.parse({ partners: listValuesResponse.items });
 
   if (listValuesResponse.nextPageToken) {
     const remainingTradingPartners = await getTradingPartners(listValuesResponse.nextPageToken);
-    return { items: tradingPartnerList.items.concat(remainingTradingPartners.items)};
+    return { partners: tradingPartnerList.partners.concat(remainingTradingPartners.partners )}
   }
 
   return tradingPartnerList;

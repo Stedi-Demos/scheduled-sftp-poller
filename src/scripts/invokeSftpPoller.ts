@@ -3,6 +3,7 @@ import { SftpPollingResults } from "../functions/sftp/external-poller/types.js";
 
 (async () => {
   const functionName = "sftp-external-poller";
+  console.log(`Invoking ${functionName} function\n`);
   const result = await invokeFunction(functionName);
 
   const parsedResult: SftpPollingResults = JSON.parse(result);
@@ -11,7 +12,8 @@ import { SftpPollingResults } from "../functions/sftp/external-poller/types.js";
     `${parsedResult.processingErrorCount} processing error${parsedResult.processingErrorCount === 1 ? "" : "s"}`;
 
   console.log("Done.\nSummary:");
-  console.log(`\tpolled ${parsedResult.details.length} external SFTP server${parsedResult.details.length === 1 ? "" : "s"}`);
-  console.log(`\tprocessed ${fileCountSummary} with ${processingErrorSummary} encountered`);
+  console.log(`\t${parsedResult.details.length} external SFTP server${parsedResult.details.length === 1 ? "" : "s"} polled`);
+  console.log(`\t${fileCountSummary} processed`);
+  console.log(`\t${processingErrorSummary} encountered`);
   console.log(`${JSON.stringify(parsedResult.details, null, 2)}`);
 })();

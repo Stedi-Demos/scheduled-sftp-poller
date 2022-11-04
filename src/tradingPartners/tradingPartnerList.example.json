@@ -1,21 +1,27 @@
 {
-  "items": [
+  "partners": [
     {
-      "key": "ANOTHERMERCH",
+      "key": " STARK01002",
       "value": {
-        "name": "Another Merchant",
+        "name": "Stark Industries",
         "externalSftpConfig": {
           "hostname": "<REPLACE_WITH_SFTP_HOSTNAME>",
           "username": "<REPLACE_WITH_SFTP_USERNAME>",
           "password": "<REPLACE_WITH_SFTP_PASSWORD>",
           "inboundPath": "/inbound"
+        },
+        "bucketConfig": {
+          "bucketName": "TonyStarkBucket",
+          "paths": {
+            "inboundPath": "stark_ind/incoming"
+          }
         }
       }
     },
     {
       "key": "111222333444",
       "value": {
-        "name": "Yet Another Merchant",
+        "name": "Vandalay Industries",
         "myPartnershipId": "555666777888",
         "resourceIds": [
           {
@@ -30,13 +36,18 @@
           "hostname": "<REPLACE_WITH_SFTP_HOSTNAME>",
           "username": "<REPLACE_WITH_SFTP_USERNAME>",
           "password": "<REPLACE_WITH_SFTP_PASSWORD>"
+        },
+        "bucketConfig": {
+          "paths": {
+            "outboundPath": "vandalay/exporter"
+          }
         }
       }
     },
     {
-      "key": "TP merchant ID",
+      "key": "MY_PARTNER_ISA",
       "value": {
-        "name": "Seriously Another Merchant",
+        "name": "Acme, Inc.",
         "resourceIds": [
           {
             "key": "X12-5010-940",

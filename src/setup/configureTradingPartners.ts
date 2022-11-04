@@ -2,22 +2,22 @@ import * as fs from "fs";
 
 import { SetValueCommand } from "@stedi/sdk-client-stash";
 
-import { Convert } from "../lib/types/TradingPartnerList.js";
+import { TradingPartnerList } from "../lib/types/tradingPartnerList.js";
 import { ensureEmptyKeyspaceExists, stashClient } from "../lib/stash.js";
 import { TRADING_PARTNERS_KEYSPACE_NAME } from "../lib/constants.js";
 
-const TRADING_PARTNER_LIST_INPUT_FILE = "./src/resources/tradingPartners/tradingPartnerList.json";
+const TRADING_PARTNER_LIST_INPUT_FILE = "./src/tradingPartners/tradingPartnerList.json";
 
 (async () => {
   const configJson = fs.readFileSync(TRADING_PARTNER_LIST_INPUT_FILE, "utf8");
-  const tradingPartnerList = Convert.toTradingPartnerList(configJson);
+  const tradingPartnerList = TradingPartnerList.parse(JSON.parse(configJson));
 
   // ensure that initial state is an empty keyspace so that the contents of trading partner
   // input file represents the state of all trading partners (don't leave outdated entries
   // behind when script is re-run)
   await ensureEmptyKeyspaceExists(TRADING_PARTNERS_KEYSPACE_NAME);
 
-  const promises = tradingPartnerList.items.map(async (tradingPartner) => {
+  const promises = tradingPartnerList.partners.map(async (tradingPartner) => {
     console.log(`processing trading partner: ${tradingPartner.key} (${tradingPartner.value.name})`);
     const { key, value } = tradingPartner;
     await stashClient().send(new SetValueCommand({
@@ -31,6 +31,6 @@ const TRADING_PARTNER_LIST_INPUT_FILE = "./src/resources/tradingPartners/trading
 
   await Promise.all(promises);
   console.log("\nDone.");
-  const total = tradingPartnerList.items.length;
+  const total = tradingPartnerList.partners.length;
   console.log(`Populated configuration details for ${total} trading partner${total === 1 ? "" : "s"}`);
 })();

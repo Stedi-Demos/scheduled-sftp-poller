@@ -1,7 +1,7 @@
 {
   "partners": [
     {
-      "key": " STARK01002",
+      "key": "STARK01002",
       "value": {
         "name": "Stark Industries",
         "externalSftpConfig": {

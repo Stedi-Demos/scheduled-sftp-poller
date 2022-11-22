@@ -6,7 +6,7 @@ import { SftpPollingResults } from "../functions/sftp/external-poller/types.js";
   console.log(`Invoking ${functionName} function\n`);
   const result = await invokeFunction(functionName);
 
-  if ((result as any).hasOwnProperty("failureRecord")) {
+  if (!result || (result as any).hasOwnProperty("failureRecord")) {
     console.log(`Errors encountered during processing\n${JSON.stringify(result)}`);
     process.exit(-1);
   }

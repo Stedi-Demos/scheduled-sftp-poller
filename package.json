@@ -33,5 +33,8 @@
   },
   "prettier": {
     "useTabs": false
+  },
+  "dependencies": {
+    "@stedi/sdk-token-provider": "^0.0.44"
   }
 }

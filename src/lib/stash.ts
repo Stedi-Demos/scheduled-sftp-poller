@@ -8,7 +8,7 @@ import {
   KeyspaceAlreadyExistsError,
   KeyspaceNotFoundError,
   StashClient,
-  StashClientConfig
+  StashClientConfig,
 } from "@stedi/sdk-client-stash";
 
 import { DEFAULT_SDK_CLIENT_PROPS } from "./constants.js";
@@ -27,10 +27,12 @@ export const stashClient = (): StashClient => {
   return _stashClient;
 };
 
-export const createKeyspace = async (keyspaceName: string): Promise<Keyspace> => {
+export const createKeyspace = async (
+  keyspaceName: string
+): Promise<Keyspace> => {
   let keyspace: Keyspace = await stashClient().send(
     new CreateKeyspaceCommand({ keyspaceName })
-  )
+  );
 
   console.log(`${keyspaceName} keyspace status: ${keyspace.status}`);
   if (keyspace.status !== "ACTIVE") {
@@ -59,7 +61,7 @@ export const createKeyspace = async (keyspaceName: string): Promise<Keyspace> =>
 export const deleteKeyspace = async (keyspaceName: string): Promise<void> => {
   let keyspace: Keyspace = await stashClient().send(
     new DeleteKeyspaceCommand({ keyspaceName })
-  )
+  );
 
   console.log(`waiting for ${keyspaceName} keyspace deletion to finish`);
   const getKeyspaceCommand = new GetKeyspaceCommand({ keyspaceName });
@@ -89,7 +91,9 @@ export const deleteKeyspace = async (keyspaceName: string): Promise<void> => {
 
 // Create new keyspace if it doesn't already exist, otherwise delete existing
 // keyspace and create a new one to ensure that it is in an empty state
-export const ensureEmptyKeyspaceExists = async (keyspaceName: string): Promise<void> => {
+export const ensureEmptyKeyspaceExists = async (
+  keyspaceName: string
+): Promise<void> => {
   try {
     await createKeyspace(keyspaceName);
   } catch (e) {
@@ -98,7 +102,9 @@ export const ensureEmptyKeyspaceExists = async (keyspaceName: string): Promise<v
       throw e;
     }
 
-    console.log(`${keyspaceName} keyspace already exists; deleting and re-creating to ensure empty state`);
+    console.log(
+      `${keyspaceName} keyspace already exists; deleting and re-creating to ensure empty state`
+    );
     await deleteKeyspace(keyspaceName);
     await createKeyspace(keyspaceName);
   }

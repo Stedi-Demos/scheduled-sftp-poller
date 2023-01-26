@@ -24,67 +24,67 @@ On each scheduled invocation, the `sftp-external-poller` performs several steps:
 
 The SFP poller relies on trading partner profile data that is stored in [Stash](https://www.stedi.com/docs/stash). The trading partner profiles are created based on a JSON configuration file (which you will need to create during setup). An example configuration file containing basic properties for a single trading partner is shown below:
 
-  ```json
-  {
-    "partners": [
-      {
-        "key": "ANOTHERMERCH",
-        "value": {
-          "name": "Another Merchant",
-          "externalSftpConfig": {
-            "hostname": "sftp.anothermerchant.com",
-            "username": "sftpuser1",
-            "password": "not-a-real-password"
-          }
+```json
+{
+  "partners": [
+    {
+      "key": "ANOTHERMERCH",
+      "value": {
+        "name": "Another Merchant",
+        "externalSftpConfig": {
+          "hostname": "sftp.anothermerchant.com",
+          "username": "sftpuser1",
+          "password": "not-a-real-password"
         }
       }
-    ]
-  }
-  ```
+    }
+  ]
+}
+```
 
 ### Trading partner profile configuration schema
 
-The trading partner configuration file should conform to the TypeScript type shown below: 
+The trading partner configuration file should conform to the TypeScript type shown below:
 
-  ```typescript
-  export interface TradingPartnerConfig {
-    name:                string;
-    myPartnershipId?:    string;             // optional identifier used by my trading partner to identify my messages
-    externalSftpConfig?: ExternalSFTPConfig; // optional SFTP connection details when using my trading partner's SFTP
-    bucketConfig?:       BucketConfig        // optional path prefixes used for reading/writing files for this trading partner
-    resourceIds?:        ResourceIds[];      // optional IDs for Stedi guides and mappings specific to this trading partner
-    additionalConfig?:   any;                // optional freeform attribute to hold any additional config required
-  }
+```typescript
+export interface TradingPartnerConfig {
+  name: string;
+  myPartnershipId?: string; // optional identifier used by my trading partner to identify my messages
+  externalSftpConfig?: ExternalSFTPConfig; // optional SFTP connection details when using my trading partner's SFTP
+  bucketConfig?: BucketConfig; // optional path prefixes used for reading/writing files for this trading partner
+  resourceIds?: ResourceIds[]; // optional IDs for Stedi guides and mappings specific to this trading partner
+  additionalConfig?: any; // optional freeform attribute to hold any additional config required
+}
 
-  export interface ExternalSFTPConfig {
-    hostname:      string;
-    username:      string;
-    password:      string;
-    port?:         number; // optional SFTP connection port (default is 22)
-    inboundPath?:  string; // optional path used for reading inbound documents
-    outboundPath?: string; // optional path used for writing outbound documents
-  }
+export interface ExternalSFTPConfig {
+  hostname: string;
+  username: string;
+  password: string;
+  port?: number; // optional SFTP connection port (default is 22)
+  inboundPath?: string; // optional path used for reading inbound documents
+  outboundPath?: string; // optional path used for writing outbound documents
+}
 
-  export interface BucketConfig {
-    bucketName?: string; // optional bucket name used for reading/writing files for this trading partner (default is the bucket used to back Stedi SFTP)
-    paths?: BucketPaths;
-  }
+export interface BucketConfig {
+  bucketName?: string; // optional bucket name used for reading/writing files for this trading partner (default is the bucket used to back Stedi SFTP)
+  paths?: BucketPaths;
+}
 
-  export interface BucketPaths {
-    inboundPath?: string;  // optional path prefix used when reading incoming files from this trading partner (default is `trading_partners/${tradingPartnerName}/inbound`)
-    outboundPath?: string; // optional path prefix used when writing outgoing files for this trading partner to pick up (default is `trading_partners/${tradingPartnerName}/outbound`)
-  }
+export interface BucketPaths {
+  inboundPath?: string; // optional path prefix used when reading incoming files from this trading partner (default is `trading_partners/${tradingPartnerName}/inbound`)
+  outboundPath?: string; // optional path prefix used when writing outgoing files for this trading partner to pick up (default is `trading_partners/${tradingPartnerName}/outbound`)
+}
 
-  export interface ResourceIds {
-     key:          string; // key used to identify resource IDs specifc to this customer (for example, "x12-5010-855")
-     value: {
-       guideId?:   string;
-       mappingId?: string;
-     }
-  }
-  ```
+export interface ResourceIds {
+  key: string; // key used to identify resource IDs specifc to this customer (for example, "x12-5010-855")
+  value: {
+    guideId?: string;
+    mappingId?: string;
+  };
+}
+```
 
-There is an [example configuration file](src/tradingPartners/tradingPartnerList.example.json) that includes trading partners with a variety of configurations that can be used as a starting point to create a configuration file for your trading partners. 
+There is an [example configuration file](src/tradingPartners/tradingPartnerList.example.json) that includes trading partners with a variety of configurations that can be used as a starting point to create a configuration file for your trading partners.
 
 ## Prerequisites
 
@@ -97,20 +97,22 @@ There is an [example configuration file](src/tradingPartners/tradingPartnerList.
    ```
 
 1. Install the necessary dependencies:
- 
+
    ```bash
    cd scheduled-sftp-poller
    npm ci
    ```
 
 1. This project uses `dotenv` to manage the environmental variables required. You must create a `.env` file in the root directory of this repo and add one environment variable:
-   * `STEDI_API_KEY`: Your Stedi API Key - used to deploy the function and internally to interact with product APIs. If you don't already have one, you can generate an [API Key here](https://www.stedi.com/app/settings/api-keys).
+
+   - `STEDI_API_KEY`: Your Stedi API Key - used to deploy the function and internally to interact with product APIs. If you don't already have one, you can generate an [API Key here](https://www.stedi.com/app/settings/api-keys).
 
    Example `.env` file:
+
    ```
    STEDI_API_KEY=<REPLACE_ME>
    ```
-   
+
 1. Create a trading partner configuration file named `tradingPartnerList.json` in the [tradingPartners directory](src/tradingPartners). There is an [example file](src/tradingPartners/tradingPartnerList.example.json) in that same directory that can be copied and renamed to `tradingPartnerList.json` and updated with details for your trading partners. _Note:_ this file is intentionally excluded from git via the `.gitignore` file for the repo to avoid SFTP credentials from being stored in source control. The trading partner profile configuration must conform to the schema described above in the [Trading partner profiles](#trading-partner-profile-configuration-schema) overview.
 
 1. Configure your trading partners by running:
@@ -128,7 +130,7 @@ There is an [example configuration file](src/tradingPartners/tradingPartnerList.
    processing trading partner: ANOTHERMERCH (Another Merchant)
    processing trading partner: 111222333444 (Yet Another Merchant)
    processing trading partner: TP merchant ID (Seriously Another Merchant)
-    
+
    Done.
    Populated configuration details for 3 trading partners
    ```
@@ -153,6 +155,7 @@ There is an [example configuration file](src/tradingPartners/tradingPartnerList.
 This repo includes a basic deployment script to bundle and deploy the `sftp-external-poller` function to Stedi. To deploy you must complete the following steps:
 
 1. Confirm that your `.env` file contains the necessary environment variables:
+
    - `STEDI_API_KEY`
    - `SFTP_BUCKET_NAME`
    - `EXECUTIONS_BUCKET_NAME`
@@ -166,6 +169,7 @@ This repo includes a basic deployment script to bundle and deploy the `sftp-exte
    ```
 
 1. To deploy the function:
+
    ```bash
    npm run deploy
    ```
@@ -184,32 +188,33 @@ This repo includes a basic deployment script to bundle and deploy the `sftp-exte
 ## Invoking the function
 
 ### Invoking manually
+
 Once deployed, you may invoke the function via the command line to verify functionality by running:
 
-   ```bash
-   npm run invoke-sftp-poller
-   ```
+```bash
+npm run invoke-sftp-poller
+```
 
 This will invoke the deployed `sftp-external-poller` Stedi function and poll the SFTP servers for any trading partners for which you specified `externalSftpConfig` details in your `tradingPartnerList.json` configuration file to look for new contents. The output of the script will include a summary of the polling operations:
 
-   ```bash
-   > stedi-sftp-poller@1.0.0 invoke-sftp-poller
-   > ts-node-esm ./src/scripts/invokeSftpPoller.ts
-   
-   Done.
-   Summary:
+```bash
+> stedi-sftp-poller@1.0.0 invoke-sftp-poller
+> ts-node-esm ./src/scripts/invokeSftpPoller.ts
+
+Done.
+Summary:
 	   1 external SFTP server polled
 	   0 files processed
 	   0 processing errors encountered
-   [
-     {
-       "name": "Another Merchant",
-       "filteredItems": [],
-       "processingErrors": [],
-       "processedFiles": []
-     }
-   ]
-   ```
+[
+  {
+    "name": "Another Merchant",
+    "filteredItems": [],
+    "processingErrors": [],
+    "processedFiles": []
+  }
+]
+```
 
 ### Scheduled invocation
 
@@ -220,4 +225,5 @@ The repo includes a [scheduler GitHub action](./.github/workflows/scheduler.yaml
 1. Enable the workflow to run in your forked repo. For security puposes, GitHub requires that you explicitly enable workflows that are copied over when a repo is forked. In your forked repo, click the `Actions` tab, and click the button to enable workflow runs.
 
 #### Change invocation schedule
-To change the schedule for invoking the SFTP poller, you can modify the `cron` attribute of the schedule in accordance with the [GitHub documentation for workflow schedules](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule). After making changes to the workflow definition, be sure to commit the changes and push them to your forked repo. 
+
+To change the schedule for invoking the SFTP poller, you can modify the `cron` attribute of the schedule in accordance with the [GitHub documentation for workflow schedules](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule). After making changes to the workflow definition, be sure to commit the changes and push them to your forked repo.

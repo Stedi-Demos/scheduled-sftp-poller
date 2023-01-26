@@ -3,18 +3,23 @@ import { serializeError } from "serialize-error";
 
 import { PutObjectCommand } from "@stedi/sdk-client-buckets";
 
-import { SftpPollingResults, SftpTradingPartnerPollingDetails } from "./types.js";
+import {
+  SftpPollingResults,
+  SftpTradingPartnerPollingDetails,
+} from "./types.js";
 import { bucketClient } from "../../../lib/buckets.js";
 import {
   failedExecution,
   FailureResponse,
   generateExecutionId,
   markExecutionAsSuccessful,
-  recordNewExecution
+  recordNewExecution,
 } from "../../../lib/execution.js";
 import { getTradingPartners } from "../../../lib/tradingPartners.js";
 
-export const handler = async (): Promise<SftpPollingResults|FailureResponse> => {
+export const handler = async (): Promise<
+  SftpPollingResults | FailureResponse
+> => {
   const executionTime = new Date().toISOString();
   const executionId = generateExecutionId({ executionTime });
   console.log("starting", JSON.stringify({ executionTime, executionId }));
@@ -22,7 +27,9 @@ export const handler = async (): Promise<SftpPollingResults|FailureResponse> => 
   await recordNewExecution(executionId, { executionTime });
 
   const allTradingPartners = await getTradingPartners();
-  const tradingPartnersToPoll = allTradingPartners.partners.filter((tradingPartner) => tradingPartner.value.externalSftpConfig);
+  const tradingPartnersToPoll = allTradingPartners.partners.filter(
+    (tradingPartner) => tradingPartner.value.externalSftpConfig
+  );
 
   const results: SftpPollingResults = {
     processedFileCount: 0,
@@ -49,27 +56,36 @@ export const handler = async (): Promise<SftpPollingResults|FailureResponse> => 
 
     const inboundDirectoryToScan = tradingPartnerSftpConfig.inboundPath || "/";
     if (!inboundDirectoryToScan.startsWith("/")) {
-      tradingPartnerPollingResults.configurationError =
-        new Error("invalid configuration: inboundPath must be an absolute path (must start with `/`)");
+      tradingPartnerPollingResults.configurationError = new Error(
+        "invalid configuration: inboundPath must be an absolute path (must start with `/`)"
+      );
       break;
     }
 
-    const destinationBucket = tradingPartner.value.bucketConfig?.bucketName || process.env["SFTP_BUCKET_NAME"];
+    const destinationBucket =
+      tradingPartner.value.bucketConfig?.bucketName ||
+      process.env["SFTP_BUCKET_NAME"];
     if (!destinationBucket) {
-      tradingPartnerPollingResults.configurationError = new Error("no destination bucket configured");
+      tradingPartnerPollingResults.configurationError = new Error(
+        "no destination bucket configured"
+      );
       break;
     }
 
-    const destinationPrefix = tradingPartner.value.bucketConfig?.paths?.inboundPath ||
+    const destinationPrefix =
+      tradingPartner.value.bucketConfig?.paths?.inboundPath ||
       `trading_partners/${tradingPartner.value.name}/inbound`;
 
     if (destinationPrefix.startsWith("/")) {
-      tradingPartnerPollingResults.configurationError =
-        new Error("invalid configuration: bucketConfig.inboundPath must not start with `/`");
+      tradingPartnerPollingResults.configurationError = new Error(
+        "invalid configuration: bucketConfig.inboundPath must not start with `/`"
+      );
       break;
     }
 
-    console.log(`polling sftp connection for: ${tradingPartner.value.name} (path=${inboundDirectoryToScan})`);
+    console.log(
+      `polling sftp connection for: ${tradingPartner.value.name} (path=${inboundDirectoryToScan})`
+    );
 
     const sftpClient = new Client();
     await sftpClient.connect(sftpConfig);
@@ -81,20 +97,22 @@ export const handler = async (): Promise<SftpPollingResults|FailureResponse> => 
         tradingPartnerPollingResults.filteredItems.push({
           path: item.name,
           reason: "skipped due to not being a file",
-        })
+        });
         break;
       }
 
       try {
         // Copy file contents via SFTP and upload to Stedi bucket for processing
         const sourcePath = `${inboundDirectoryToScan}/${item.name}`;
-        const destinationPath =  `${destinationPrefix}/${item.name}`;
+        const destinationPath = `${destinationPrefix}/${item.name}`;
         const fileContents = await sftpClient.get(sourcePath);
-        await bucketClient().send(new PutObjectCommand({
-          bucketName: destinationBucket,
-          key: destinationPath,
-          body: fileContents,
-        }));
+        await bucketClient().send(
+          new PutObjectCommand({
+            bucketName: destinationBucket,
+            key: destinationPath,
+            body: fileContents,
+          })
+        );
 
         // Delete file from SFTP after processing
         await sftpClient.delete(sourcePath);
@@ -102,7 +120,10 @@ export const handler = async (): Promise<SftpPollingResults|FailureResponse> => 
         results.processedFileCount++;
         tradingPartnerPollingResults.processedFiles.push(destinationPath);
       } catch (e) {
-        const error = e instanceof Error ? e : new Error(`unknown error: ${serializeError(e)}`);
+        const error =
+          e instanceof Error
+            ? e
+            : new Error(`unknown error: ${serializeError(e)}`);
 
         results.processingErrorCount++;
         tradingPartnerPollingResults.processingErrors.push({
@@ -116,8 +137,16 @@ export const handler = async (): Promise<SftpPollingResults|FailureResponse> => 
     results.details.push(tradingPartnerPollingResults);
   }
 
-  if (results.details.some((tradingPartnerResults) => tradingPartnerResults.processingErrors.length > 0)) {
-    return failedExecution(executionId, new Error("encountered processing errors for some trading partners"));
+  if (
+    results.details.some(
+      (tradingPartnerResults) =>
+        tradingPartnerResults.processingErrors.length > 0
+    )
+  ) {
+    return failedExecution(
+      executionId,
+      new Error("encountered processing errors for some trading partners")
+    );
   }
 
   await markExecutionAsSuccessful(executionId);

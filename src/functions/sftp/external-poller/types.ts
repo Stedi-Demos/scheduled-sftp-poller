@@ -13,7 +13,7 @@ export type SftpTradingPartnerPollingDetails = {
   filteredItems: FilteredItems[];
   processingErrors: ProcessingError[];
   processedFiles: string[];
-  configurationError?: Error,
+  configurationError?: Error;
 };
 
 export type SftpPollingResults = {

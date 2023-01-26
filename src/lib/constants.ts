@@ -12,4 +12,4 @@ export const DEFAULT_SDK_CLIENT_PROPS = {
   region: "us",
 };
 
-export const TRADING_PARTNERS_KEYSPACE_NAME =  "trading-partner-configs";
+export const TRADING_PARTNERS_KEYSPACE_NAME = "trading-partner-configs";

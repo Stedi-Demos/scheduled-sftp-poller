@@ -6,7 +6,8 @@ import { TradingPartnerList } from "../lib/types/tradingPartnerList.js";
 import { ensureEmptyKeyspaceExists, stashClient } from "../lib/stash.js";
 import { TRADING_PARTNERS_KEYSPACE_NAME } from "../lib/constants.js";
 
-const TRADING_PARTNER_LIST_INPUT_FILE = "./src/tradingPartners/tradingPartnerList.json";
+const TRADING_PARTNER_LIST_INPUT_FILE =
+  "./src/tradingPartners/tradingPartnerList.json";
 
 (async () => {
   const configJson = fs.readFileSync(TRADING_PARTNER_LIST_INPUT_FILE, "utf8");
@@ -18,19 +19,27 @@ const TRADING_PARTNER_LIST_INPUT_FILE = "./src/tradingPartners/tradingPartnerLis
   await ensureEmptyKeyspaceExists(TRADING_PARTNERS_KEYSPACE_NAME);
 
   const promises = tradingPartnerList.partners.map(async (tradingPartner) => {
-    console.log(`processing trading partner: ${tradingPartner.key} (${tradingPartner.value.name})`);
+    console.log(
+      `processing trading partner: ${tradingPartner.key} (${tradingPartner.value.name})`
+    );
     const { key, value } = tradingPartner;
-    await stashClient().send(new SetValueCommand({
-      keyspaceName: "trading-partner-configs",
-      key,
-      // @ts-ignore: optional properties (like `externalSftpConfig`) cause errors because the underlying type for
-      // `value` does not include `undefined`. Check can be ignored because they are handled correctly at runtime.
-      value,
-    }));
+    await stashClient().send(
+      new SetValueCommand({
+        keyspaceName: "trading-partner-configs",
+        key,
+        // @ts-ignore: optional properties (like `externalSftpConfig`) cause errors because the underlying type for
+        // `value` does not include `undefined`. Check can be ignored because they are handled correctly at runtime.
+        value,
+      })
+    );
   });
 
   await Promise.all(promises);
   console.log("\nDone.");
   const total = tradingPartnerList.partners.length;
-  console.log(`Populated configuration details for ${total} trading partner${total === 1 ? "" : "s"}`);
+  console.log(
+    `Populated configuration details for ${total} trading partner${
+      total === 1 ? "" : "s"
+    }`
+  );
 })();

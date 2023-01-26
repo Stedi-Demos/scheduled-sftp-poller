@@ -18,8 +18,12 @@ const bucketName = requiredEnvVar("EXECUTIONS_BUCKET_NAME");
 let _executionsBucketClient: BucketsClient;
 let _infiniteLoopCheckPassed: boolean = false;
 
-export type FailureRecord = { bucketName?: string, key: string };
-export type FailureResponse = { message: string, failureRecord: FailureRecord, error: ErrorObject }
+export type FailureRecord = { bucketName?: string; key: string };
+export type FailureResponse = {
+  message: string;
+  failureRecord: FailureRecord;
+  error: ErrorObject;
+};
 
 export const recordNewExecution = async (executionId: string, input: any) => {
   const client = await executionsBucketClient();
@@ -69,13 +73,16 @@ export const markExecutionAsSuccessful = async (executionId: string) => {
   return { inputResult, failureResult };
 };
 
-export const failedExecution = async (executionId: string, error: Error): Promise<FailureResponse> => {
-  const rawError = serializeError(error)
+export const failedExecution = async (
+  executionId: string,
+  error: Error
+): Promise<FailureResponse> => {
+  const rawError = serializeError(error);
   const failureRecord = await markExecutionAsFailed(executionId, rawError);
   const message = "execution failed";
   await trackProgress(message, { error: rawError });
-  return { message, failureRecord, error: rawError }
-}
+  return { message, failureRecord, error: rawError };
+};
 
 const markExecutionAsFailed = async (
   executionId: string,
@@ -97,26 +104,35 @@ const markExecutionAsFailed = async (
   return { bucketName, key };
 };
 
-export const generateExecutionId = (event: any) => hash({
-  functionName: functionName(),
-  event,
-});
+export const generateExecutionId = (event: any) =>
+  hash({
+    functionName: functionName(),
+    event,
+  });
 
 export const functionName = () => requiredEnvVar("STEDI_FUNCTION_NAME");
 
 const executionsBucketClient = async (): Promise<BucketsClient> => {
-  if(_executionsBucketClient === undefined) {
+  if (_executionsBucketClient === undefined) {
     _executionsBucketClient = bucketClient();
   }
 
   if (!_infiniteLoopCheckPassed) {
     // guard against infinite Function execution loops
-    const executionsBucket = await  _executionsBucketClient.send(new ReadBucketCommand({ bucketName }));
-    if (executionsBucket.notifications?.functions?.some((fn) => fn.functionName === functionName())) {
-      throw new Error("Error: executions bucket has recursive notifications configured")
+    const executionsBucket = await _executionsBucketClient.send(
+      new ReadBucketCommand({ bucketName })
+    );
+    if (
+      executionsBucket.notifications?.functions?.some(
+        (fn) => fn.functionName === functionName()
+      )
+    ) {
+      throw new Error(
+        "Error: executions bucket has recursive notifications configured"
+      );
     }
     _infiniteLoopCheckPassed = true;
   }
 
   return _executionsBucketClient;
-}
+};

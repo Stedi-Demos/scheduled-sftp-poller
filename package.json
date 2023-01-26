@@ -19,6 +19,7 @@
     "@stedi/sdk-client-functions": "^0.0.19",
     "@stedi/sdk-client-sftp": "^0.0.28",
     "@stedi/sdk-client-stash": "^0.0.28",
+    "@stedi/sdk-token-provider": "^0.0.44",
     "@types/node": "^18.11.8",
     "@types/object-hash": "^2.2.1",
     "@types/ssh2-sftp-client": "^7.1.0",
@@ -40,8 +41,5 @@
   },
   "prettier": {
     "useTabs": false
-  },
-  "dependencies": {
-    "@stedi/sdk-token-provider": "^0.0.44"
   }
 }

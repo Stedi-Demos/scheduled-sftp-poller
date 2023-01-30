@@ -37,6 +37,9 @@ const createOrUpdateFunction = async (
       environmentVariables["NODE_OPTIONS"] = "--enable-source-maps";
       environmentVariables["STEDI_FUNCTION_NAME"] = functionName;
 
+      // The API key is not needed when running in the context of a Stedi function
+      delete environmentVariables.STEDI_API_KEY;
+
       const result = await createOrUpdateFunction(
         functionName,
         functionPackage,

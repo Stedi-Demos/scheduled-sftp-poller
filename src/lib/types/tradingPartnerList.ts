@@ -25,7 +25,7 @@ export const BucketPaths = z.strictObject({
 export const BucketConfig = z.strictObject({
   bucketName: z.string().optional(),
   paths: BucketPaths.optional(),
-})
+});
 
 export const TradingPartnerConfig = z.strictObject({
   name: z.string(),
@@ -42,7 +42,7 @@ export const TradingPartner = z.strictObject({
 });
 
 export const TradingPartnerList = z.strictObject({
-  partners: z.array(TradingPartner)
+  partners: z.array(TradingPartner),
 });
 
 export type TradingPartnerList = z.infer<typeof TradingPartnerList>;

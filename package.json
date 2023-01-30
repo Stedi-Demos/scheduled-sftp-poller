@@ -9,7 +9,7 @@
     "deploy": "ts-node-esm ./src/setup/deploy.ts",
     "invoke-sftp-poller": "ts-node-esm ./src/scripts/invokeSftpPoller.ts",
     "fix": "npm run fix:lint && npm run fix:style",
-    "fix:lint": "eslint smithy/sdk-client-identity/src src bin e2e --no-error-on-unmatched-pattern --ignore-path .gitignore --fix",
+    "fix:lint": "eslint src bin e2e --no-error-on-unmatched-pattern --ignore-path .gitignore --fix",
     "fix:style": "prettier -w ."
   },
   "author": "",

@@ -1,5 +1,12 @@
 # Stedi scheduled SFTP poller demo
 
+## This project has been deprecated
+
+Thanks for your interest in Stedi! This demo project has been deprecated in favor of [Stedi EDI Boostrap](https://github.com/Stedi-Demos/bootstrap). The SFTP poller functionality [has its own README](https://github.com/Stedi-Demos/bootstrap/tree/main/src/functions/ftp/external-poller#readme) within the bootstrap project. Please go check it out, and don't hesitate to [contact us](https://www.stedi.com/contact) so that we can help you get up and running!
+
+<details>
+  <summary>Previous README contents</summary>
+
 This repo contains a demo for polling SFTP servers for files to process on a scheduled basis, via a GitHub workflow. When files are found during the polling operation, they are copied to a Stedi bucket and then deleted from the SFTP server. To automate the processing of these files, consider taking a look at the [Stedi read EDI demo](https://github.com/Stedi-Demos/read-edi-demo)!
 
 The SFTP polling is orchestrated via a Stedi function called `sftp-external-poller`, which is written in [TypeScript](src/functions/sftp/external-poller/handler.ts). The function is invoked automatically according ot the scheduled defined in the [GitHub workflow](.github/workflows/scheduler.yaml).
@@ -227,3 +234,4 @@ The repo includes a [scheduler GitHub action](./.github/workflows/scheduler.yaml
 #### Change invocation schedule
 
 To change the schedule for invoking the SFTP poller, you can modify the `cron` attribute of the schedule in accordance with the [GitHub documentation for workflow schedules](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule). After making changes to the workflow definition, be sure to commit the changes and push them to your forked repo.
+</details>

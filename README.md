@@ -2,7 +2,7 @@
 
 ## This project has been deprecated
 
-Thanks for your interest in Stedi! This demo project has been deprecated in favor of [Stedi EDI Boostrap](https://github.com/Stedi-Demos/bootstrap). The SFTP poller functionality [has its own README](https://github.com/Stedi-Demos/bootstrap/tree/main/src/functions/ftp/external-poller#readme) within the bootstrap project. Please go check it out, and don't hesitate to [contact us](https://www.stedi.com/contact) so that we can help you get up and running!
+Thanks for your interest in Stedi! This demo project has been deprecated in favor of [Stedi EDI Bootstrap](https://github.com/Stedi-Demos/bootstrap). The SFTP poller functionality [has its own README](https://github.com/Stedi-Demos/bootstrap/tree/main/src/functions/ftp/external-poller#readme) within the bootstrap project. Please go check it out, and don't hesitate to [contact us](https://www.stedi.com/contact) so that we can help you get up and running!
 
 <details>
   <summary>Previous README contents</summary>
